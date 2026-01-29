@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Assuming you're using React Router
+import { apiRequest } from "../Services/API";
 
 const Login = () => {
+	const [formData, setFormData] = useState({
+		username: "",
+		password: "",
+	});
+
+	const [error, setError] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setIsLoading(true);
+		setError("");
+		try {
+			const res = await apiRequest.post("/auth/login", {
+				username: formData.username,
+				password: formData.password,
+			});
+			console.log(res);
+			// updateUser(res.data);
+			navigate("/home");
+		} catch (error) {
+			setError(error.response?.data?.msg || "Something went wrong");
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -33,32 +72,19 @@ const Login = () => {
 
 			<div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
 				<div className="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100">
-					{/* Tabs - Login / Sign Up */}
-					<div className="flex justify-center mb-8">
-						<div className="inline-flex rounded-full bg-gray-100 p-1">
-							<button
-								type="button"
-								className="px-6 py-2 rounded-full text-sm font-medium transition-all bg-white shadow-sm text-gray-900"
-							>
-								Login
-							</button>
-							<button
-								type="button"
-								className="px-6 py-2 rounded-full text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-							>
-								Sign Up
-							</button>
-						</div>
-					</div>
-
-					<form className="space-y-6">
-						{/* Email */}
+					<form onSubmit={handleSubmit} className="space-y-6">
+						{error && (
+							<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
+								{error}
+							</div>
+						)}
+						{/* Username */}
 						<div>
 							<label
-								htmlFor="email"
+								htmlFor="username"
 								className="block text-sm font-medium text-gray-700 mb-1"
 							>
-								Email
+								Username
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -72,18 +98,19 @@ const Login = () => {
 											strokeLinecap="round"
 											strokeLinejoin="round"
 											strokeWidth={2}
-											d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+											d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
 										/>
 									</svg>
 								</div>
 								<input
-									id="email"
-									name="email"
-									type="email"
-									autoComplete="email"
+									id="username"
+									name="username"
+									type="text"
+									value={formData.username}
+									onChange={handleChange}
 									required
 									className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 placeholder-gray-400"
-									placeholder="you@example.com"
+									placeholder="username"
 								/>
 							</div>
 						</div>
@@ -122,7 +149,8 @@ const Login = () => {
 									id="password"
 									name="password"
 									type="password"
-									autoComplete="current-password"
+									value={formData.password}
+									onChange={handleChange}
 									required
 									className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 placeholder-gray-400"
 									placeholder="••••••••"
@@ -130,6 +158,7 @@ const Login = () => {
 							</div>
 						</div>
 
+						{/* Forgot Password & Sign Up */}
 						<div className="flex items-center justify-between">
 							<div className="text-sm">
 								<a
@@ -139,14 +168,25 @@ const Login = () => {
 									Forgot password?
 								</a>
 							</div>
+							<div className="text-sm">
+								<Link
+									to="/register"
+									className="font-medium text-emerald-600 hover:text-emerald-500 transition-colors"
+								>
+									<span className="font-semibold">Sign up</span>
+								</Link>
+							</div>
 						</div>
 
 						<div>
 							<button
 								type="submit"
-								className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 font-medium transition-all duration-200"
+								disabled={isLoading}
+								className={`w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium transition-colors duration-200 ${
+									isLoading ? "opacity-70 cursor-not-allowed" : ""
+								}`}
 							>
-								Login
+								{isLoading ? "Logging..." : "Login"}
 							</button>
 						</div>
 					</form>

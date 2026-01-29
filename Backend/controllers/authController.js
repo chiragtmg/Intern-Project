@@ -22,19 +22,19 @@ export const registerUser = async (req, res) => {
 			avatar: avatar || null,
 		});
 
-		// //Create user response object
-		// const userResponse = {
-		// 	_id: newUser._id,
-		// 	username: newUser.username,
-		// 	email: newUser.email,
-		// 	avatar: newUser.avatar,
-		// 	createdAt: newUser.createdAt,
-		// 	updatedAt: newUser.updatedAt,
-		// }; //for testing only
+		//Create user response object
+		const userResponse = {
+			_id: newUser._id,
+			username: newUser.username,
+			email: newUser.email,
+			avatar: newUser.avatar,
+			createdAt: newUser.createdAt,
+			updatedAt: newUser.updatedAt,
+		}; //for testing only
 
 		res
 			.status(201)
-			.json({ message: "User registered successfully" });
+			.json({ message: "User registered successfully", userResponse });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" });
 		console.error(error);
