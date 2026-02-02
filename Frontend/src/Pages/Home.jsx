@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Home = () => {
+	const { currentUser } = useContext(AuthContext);
+	console.log(currentUser);
 	return (
 		<div className="min-h-screen bg-gray-50">
 			{/* Header */}
@@ -25,7 +29,11 @@ const Home = () => {
 						<h1 className="text-2xl font-bold">ExpenseTracker</h1>
 					</div>
 					<div className="flex items-center gap-4">
-						<span className="text-sm hidden sm:inline">Chirag</span>
+						<span className="text-sm hidden sm:inline">
+							<Link to= "/profile">
+							{currentUser ? currentUser.username : "Guest"}
+							</Link>
+						</span>
 						<div className="h-9 w-9 rounded-full bg-emerald-700 flex items-center justify-center text-sm font-medium">
 							C
 						</div>

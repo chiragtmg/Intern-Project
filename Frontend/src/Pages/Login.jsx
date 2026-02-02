@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Assuming you're using React Router
 import { apiRequest } from "../Services/API";
+import { AuthContext } from "../Context/AuthContext";
 
 const Login = () => {
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
 	});
+
+	const { updateUser } = useContext(AuthContext);
 
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +33,7 @@ const Login = () => {
 				password: formData.password,
 			});
 			console.log(res);
-			// updateUser(res.data);
+			updateUser(res.data);
 			navigate("/home");
 		} catch (error) {
 			setError(error.response?.data?.msg || "Something went wrong");
