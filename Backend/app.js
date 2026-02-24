@@ -3,6 +3,8 @@ import dotenv from "dotenv"; //to call variable from dotenv and hide url or main
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import transactionRoutes from "./routes/transactionRoutes.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -21,6 +23,9 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/transactions", transactionRoutes);
+
 app.get("/", (req, res) => {
 	res.send("welcome to the recipe api");
 });
