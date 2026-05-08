@@ -89,7 +89,7 @@ function StatCard({ label, amount, color, icon, trend }) {
 
 export default function Dashboard() {
 	const currentYear = new Date().getFullYear();
-	const [year, setYear] = useState(currentYear);
+	const [year, setYear] = useState(2026);
 	const [summary, setSummary] = useState(null);
 	const [recent, setRecent] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -99,18 +99,27 @@ export default function Dashboard() {
 		const fetchDashboardData = async () => {
 			setLoading(true);
 			setError("");
+
 			try {
 				const [summaryRes, txRes] = await Promise.all([
 					apiRequest.get("/transactions/summary", { params: { year } }),
 					apiRequest.get("/transactions", { params: { year } }),
 				]);
 
+				console.log("📊 Summary Response:", summaryRes.data);
+				console.log("📅 Year being sent:", year);
+
+				// Summary
 				setSummary(summaryRes.data.data || summaryRes.data);
-				const txData = txRes.data.data || txRes.data;
-				setRecent(Array.isArray(txData) ? txRes.data.slice(0, 6) : []);
+
+				// Transactions - FIXED
+				const txData = txRes.data; // ← This is already an array
+				console.log("Transactions Response:", txData); // Keep for now
+
+				setRecent(Array.isArray(txData) ? txData.slice(0, 6) : []);
 			} catch (err) {
+				console.error("Dashboard fetch error:", err);
 				setError("Failed to load dashboard data");
-				console.error(err);
 			} finally {
 				setLoading(false);
 			}

@@ -37,8 +37,8 @@ const Register = () => {
 			console.log(res);
 			navigate("/login");
 		} catch (error) {
-			setError(error.response?.data?.msg || "Something went wrong");
-			console.log(error);
+			setError(error.response?.data?.message || "Something went wrong");
+			// console.log(error);
 		} finally {
 			setIsLoading(false);
 		}

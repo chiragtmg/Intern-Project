@@ -34,7 +34,7 @@ const Login = () => {
 			});
 			console.log(res);
 			updateUser(res.data);
-			navigate("/home");
+			navigate("/dashboard");
 		} catch (error) {
 			setError(error.response?.data?.msg || "Something went wrong");
 			console.log(error);
